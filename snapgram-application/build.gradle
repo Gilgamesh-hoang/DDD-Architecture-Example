@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(':snapgram-domain')
+    implementation project('::snapgram-infrastructure')
+}
