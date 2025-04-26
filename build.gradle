@@ -1,54 +1,70 @@
+// Applies to all projects in this multi-module build
 allprojects {
-    group = 'com.snapgram'
-    version = '1.0'
+    group = 'com.snapgram'           // Defines the group ID for all modules
+    version = '1.0'                  // Defines the version for all modules
 
-    apply plugin: 'java'
+    apply plugin: 'java'            // Applies the basic Java plugin to all modules
 
     repositories {
-        mavenCentral()
+        mavenCentral()              // Use Maven Central to resolve dependencies
     }
 }
 
+// Buildscript block for configuring Gradle itself
 buildscript {
     ext {
-        springBootVersion = '3.4.5'
-        springManagementVersion = '1.1.7'
+        springBootVersion = '3.4.5'           // Spring Boot plugin version
+        springManagementVersion = '1.1.7'     // Spring dependency management plugin version
     }
+
     repositories {
-        mavenCentral()
+        mavenCentral()                        // Use Maven Central to fetch buildscript dependencies
     }
 
     dependencies {
+        // Spring Boot Gradle plugin for building Spring Boot applications
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+
+        // Plugin to manage dependency versions consistently
         classpath("io.spring.gradle:dependency-management-plugin:${springManagementVersion}")
     }
 }
 
+// Applies to all subprojects/modules
 subprojects {
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'    // Enables dependency management (BOM support)
+    apply plugin: 'org.springframework.boot'           // Enables Spring Boot support
 
     java {
         toolchain {
+            // Use Java 23 for compiling code
             languageVersion = JavaLanguageVersion.of(23)
         }
     }
 
+    // Ensures resources are processed before Java compilation
     compileJava.dependsOn(processResources)
 
     configurations {
         compileOnly {
+            // Make annotation processors available during compilation (needed for Lombok)
             extendsFrom annotationProcessor
         }
     }
-    dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        compileOnly 'org.projectlombok:lombok'
-        developmentOnly 'org.springframework.boot:spring-boot-devtools'
-        annotationProcessor 'org.projectlombok:lombok'
-//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    }
 
+    dependencies {
+        // Core Spring Boot starter
+        implementation 'org.springframework.boot:spring-boot-starter'
+
+        // Web support for REST APIs and Spring MVC
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        // Lombok for reducing boilerplate (compile-time only)
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        // Enables auto-reloading during development
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    }
 }

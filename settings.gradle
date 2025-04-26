@@ -1,4 +1,4 @@
-rootProject.name = 'snapgram-ddd'
+rootProject.name = 'ddd-architecture-example'
 include 'snapgram-start'
 include 'snapgram-controller'
 include 'snapgram-application'
